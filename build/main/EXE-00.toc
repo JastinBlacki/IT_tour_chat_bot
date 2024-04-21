@@ -157,7 +157,7 @@
  [],
  False,
  False,
- 1713652575,
+ 1713697898,
  [('run.exe',
    'C:\\Users\\good_ron\\Desktop\\not_found\\programm\\IT-раунд\\pythonProject\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
    'EXECUTABLE')],
