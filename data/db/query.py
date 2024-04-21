@@ -27,23 +27,16 @@ def push_inf(credit, instant_rate, months, user_id):
     conn.commit()
 
 
-def check_inf():
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute("select * from user;")
-    results = cur.fetchall()
-    return results
-
-
 def get_data(user_id):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute(f"select Pv, Ry, Ly from user where id = {user_id};")
-    data = cur.fetchall()[0]
-    if data[0] is None:
-        return None
-    else:
+    data = cur.fetchall()
+    try:
+        data = data[0]
         return data
+    except Exception:
+        return None
 
 
 def change_prmtr(user_id, prmtr, arg):

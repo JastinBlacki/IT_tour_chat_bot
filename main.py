@@ -60,15 +60,15 @@ def get_data_from_user(message):
 
 def insert_from_user(message):
     try:
+        if is_unique_user(message.chat.id):
+            insert_id(message.chat.id)
         credit_, interest_rate_, months_, = message.text.split(", ")
-
-        markup = types.InlineKeyboardMarkup()
         push_inf(credit_, interest_rate_, months_, message.chat.id)
-
+        markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton(get_message(4), callback_data='watch_inf'))
         bot.send_message(message.chat.id, get_message(5), reply_markup=markup)
     except Exception:
-        bot.send_message(message.chat.id, get_message(3))
+        bot.send_message(message.chat.id, get_message(16))
         start2_message(message)
 
 
@@ -85,8 +85,12 @@ def watch_inf(message):
 def stop_session(message):
     try:
         delete_table_inf(message.chat.id)
-        delete_img(message.chat.id)
-        bot.send_message(message.chat.id, get_message(6))
+
+        try:
+            delete_img(message.chat.id)
+            bot.send_message(message.chat.id, get_message(6))
+        except Exception:
+            bot.send_message(message.chat.id, get_message(6))
     except Exception:
         bot.send_message(message.chat.id, get_message(14))
 
@@ -107,18 +111,28 @@ def get_parameter(message, prmtr):
 
 
 def change_data(message, prmtr):
-    change_prmtr(message.chat.id, prmtr, message.text)
-    bot.send_message(message.chat.id, get_message(12))
+    if get_data(message.chat.id) is None:
+        bot.send_message(message.chat.id, get_message(15))
+        start2_message(message)
+    else:
+        change_prmtr(message.chat.id, prmtr, message.text)
+        bot.send_message(message.chat.id, get_message(12))
 
 
 @bot.message_handler(commands=['show_data'])
 def show_data(message):
-    results = get_data(message.chat.id)
-    if results is None:
+    try:
+        results = get_data(message.chat.id)
+        if results is None:
+            bot.send_message(message.chat.id, get_message(13))
+            start2_message(message)
+        else:
+            reply = f"{get_message(7)} {results[0]}\n{get_message(8)} = {results[1]}\n{get_message(9)} = {results[2]}"
+            bot.send_message(message.chat.id, reply)
+    except Exception:
         bot.send_message(message.chat.id, get_message(13))
-    else:
-        reply = f"{get_message(7)} {results[0]}\n{get_message(8)} = {results[1]}\n{get_message(9)} = {results[2]}"
-        bot.send_message(message.chat.id, reply)
+        start2_message(message)
+
 
 
 bot.infinity_polling()
